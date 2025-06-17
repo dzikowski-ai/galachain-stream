@@ -116,12 +116,10 @@ export class ChainStream {
         }
 
         if (currentBlock >= this.chainInfo.value.height) {
-          // Listen for chainInfo updates and emit only when new height is greater than currentBlock
           return this.chainInfo.pipe(
-            tap(newInfo => this.logger.log(`No new blocks, current height ${this.chainInfo.value.height}, waiting for new blocks above ${currentBlock}. New info height: ${newInfo.height}`)),
-            filter(newInfo => newInfo.height > currentBlock),
-            take(1), // Take the first emission that satisfies the condition
-            switchMap(() => of([])) // Continue with an empty emission to trigger the next expand cycle
+            filter((newInfo) => newInfo.height > currentBlock),
+            take(1),
+            switchMap(() => of([]))
           );
         }
 
